@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Roblox Account Rarity Calculator</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding-top: 100px;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #00bcd4;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Roblox Account Rarity Calculator</h1>
+  <p>Enter your Roblox username</p>
+
+  <input type="text" id="username" placeholder="Username">
+  <button onclick="checkRarity()">Check</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function checkRarity() {
+      const username = document.getElementById("username").value;
+      const resultDiv = document.getElementById("result");
+
+      resultDiv.innerHTML = "Calculating...";
+
+      const response = await fetch("/api/rarity", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username })
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        resultDiv.innerHTML = data.error;
+        return;
+      }
+
+      resultDiv.innerHTML = `
+        <h2>${data.username}</h2>
+        <p>Badges: ${data.badgeCount}</p>
+        <p>Rarity Score: ${data.rarityScore}</p>
+        <p>Rank: ${data.rank}</p>
+        <p style="font-size:12px;opacity:0.6;">
+        Fan-made tool. Not affiliated with Roblox.
+        </p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
